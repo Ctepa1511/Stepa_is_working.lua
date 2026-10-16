@@ -29,6 +29,7 @@ local CYAN = Color3.fromRGB(0, 200, 200)
 local FLING = Color3.fromRGB(255, 80, 80)
 local TROLL = Color3.fromRGB(255, 200, 0)
 local GIFT = Color3.fromRGB(200, 100, 255)
+local XRAY = Color3.fromRGB(150, 200, 255)
 local WHITE_COLOR = Color3.new(1, 1, 1)
 local DARK = Color3.fromRGB(35, 35, 35)
 local DARKER = Color3.fromRGB(22, 22, 22)
@@ -124,14 +125,14 @@ scrollMenu.BackgroundTransparency = 1
 scrollMenu.BorderSizePixel = 0
 scrollMenu.ScrollBarThickness = 4
 scrollMenu.ScrollBarImageColor3 = BLUE
-scrollMenu.CanvasSize = UDim2.new(0, 0, 0, 560)
+scrollMenu.CanvasSize = UDim2.new(0, 0, 0, 610)
 scrollMenu.Parent = main
 
 local menuLayout = Instance.new("UIListLayout")
 menuLayout.Padding = UDim.new(0, 6)
 menuLayout.Parent = scrollMenu
 
--- 11 КНОПОК
+-- 12 КНОПОК
 local menuItems = {
 	{name = "✈  ПОЛЁТ", color = BLUE},
 	{name = "📡  ТЕЛЕПОРТ К ИГРОКУ", color = GREEN},
@@ -143,6 +144,7 @@ local menuItems = {
 	{name = "💨  ОТКИДАЛКА", color = FLING},
 	{name = "🎭  ТРОЛЛИНГ", color = TROLL},
 	{name = "🎁  ВЫДАТЬ ВСЕ ПРЕДМЕТЫ", color = GIFT},
+	{name = "🔦  ПРОСВЕТ СТЕН", color = XRAY},
 	{name = "🔄  СМЕНИТЬ СЕРВЕР", color = Color3.fromRGB(255, 100, 100)}
 }
 
@@ -727,6 +729,51 @@ giftBtn.MouseButton1Click:Connect(function()
 	end)
 end)
 
+-- ПРОСВЕТ СТЕН (X-RAY)
+local xrayWin = makeWin("🔦 ПРОСВЕТ СТЕН", 150)
+local xrayBtn = Instance.new("TextButton")
+xrayBtn.Size = UDim2.new(1, -20, 0, 50)
+xrayBtn.Position = UDim2.new(0, 10, 0, 60)
+xrayBtn.BackgroundColor3 = XRAY
+xrayBtn.TextColor3 = WHITE_COLOR
+xrayBtn.Text = "🔦 ВКЛЮЧИТЬ ПРОСВЕТ"
+xrayBtn.Font = Enum.Font.GothamBold
+xrayBtn.TextSize = 14
+xrayBtn.BorderSizePixel = 0
+xrayBtn.Parent = xrayWin
+Instance.new("UICorner", xrayBtn).CornerRadius = UDim.new(0, 10)
+
+local xrayOn = false
+local xrayConn = nil
+
+xrayBtn.MouseButton1Click:Connect(function()
+	xrayOn = not xrayOn
+	if xrayOn then
+		if xrayConn then xrayConn:Disconnect() end
+		xrayConn = RS.Stepped:Connect(function()
+			if not xrayOn then return end
+			for _, obj in pairs(workspace:GetDescendants()) do
+				if obj:IsA("BasePart") then
+					if Player.Character and not obj:IsDescendantOf(Player.Character) then
+						obj.LocalTransparencyModifier = 0.7
+					end
+				end
+			end
+		end)
+		xrayBtn.Text = "🔙 ВЫКЛЮЧИТЬ ПРОСВЕТ"
+		xrayBtn.BackgroundColor3 = RED
+	else
+		if xrayConn then xrayConn:Disconnect(); xrayConn = nil end
+		for _, obj in pairs(workspace:GetDescendants()) do
+			if obj:IsA("BasePart") then
+				obj.LocalTransparencyModifier = 0
+			end
+		end
+		xrayBtn.Text = "🔦 ВКЛЮЧИТЬ ПРОСВЕТ"
+		xrayBtn.BackgroundColor3 = XRAY
+	end
+end)
+
 -- СМЕНИТЬ СЕРВЕР
 local rejoinWin = makeWin("🔄 СМЕНИТЬ СЕРВЕР", 180)
 local rejoinBtn = Instance.new("TextButton")
@@ -759,7 +806,8 @@ if createdButtons[7] then createdButtons[7].MouseButton1Click:Connect(function()
 if createdButtons[8] then createdButtons[8].MouseButton1Click:Connect(function() flingWin.Visible = true end) end
 if createdButtons[9] then createdButtons[9].MouseButton1Click:Connect(function() trollWin.Visible = true end) end
 if createdButtons[10] then createdButtons[10].MouseButton1Click:Connect(function() giftWin.Visible = true end) end
-if createdButtons[11] then createdButtons[11].MouseButton1Click:Connect(function() rejoinWin.Visible = true end) end
+if createdButtons[11] then createdButtons[11].MouseButton1Click:Connect(function() xrayWin.Visible = true end) end
+if createdButtons[12] then createdButtons[12].MouseButton1Click:Connect(function() rejoinWin.Visible = true end) end
 
 UIS.InputBegan:Connect(function(i, gpe)
 	if not gpe and i.KeyCode == Enum.KeyCode.M then main.Visible = not main.Visible end
