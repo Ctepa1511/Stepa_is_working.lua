@@ -30,6 +30,8 @@ local FLING = Color3.fromRGB(255, 80, 80)
 local TROLL = Color3.fromRGB(255, 200, 0)
 local GIFT = Color3.fromRGB(200, 100, 255)
 local XRAY = Color3.fromRGB(150, 200, 255)
+local CLICKER = Color3.fromRGB(50, 255, 150)
+local SHADER = Color3.fromRGB(255, 100, 200)
 local WHITE_COLOR = Color3.new(1, 1, 1)
 local DARK = Color3.fromRGB(35, 35, 35)
 local DARKER = Color3.fromRGB(22, 22, 22)
@@ -125,14 +127,14 @@ scrollMenu.BackgroundTransparency = 1
 scrollMenu.BorderSizePixel = 0
 scrollMenu.ScrollBarThickness = 4
 scrollMenu.ScrollBarImageColor3 = BLUE
-scrollMenu.CanvasSize = UDim2.new(0, 0, 0, 610)
+scrollMenu.CanvasSize = UDim2.new(0, 0, 0, 710)
 scrollMenu.Parent = main
 
 local menuLayout = Instance.new("UIListLayout")
 menuLayout.Padding = UDim.new(0, 6)
 menuLayout.Parent = scrollMenu
 
--- 12 КНОПОК
+-- 14 КНОПОК
 local menuItems = {
 	{name = "✈  ПОЛЁТ", color = BLUE},
 	{name = "📡  ТЕЛЕПОРТ К ИГРОКУ", color = GREEN},
@@ -145,6 +147,8 @@ local menuItems = {
 	{name = "🎭  ТРОЛЛИНГ", color = TROLL},
 	{name = "🎁  ВЫДАТЬ ВСЕ ПРЕДМЕТЫ", color = GIFT},
 	{name = "🔦  ПРОСВЕТ СТЕН", color = XRAY},
+	{name = "🖱  АВТО КЛИКЕР", color = CLICKER},
+	{name = "🎨  ШЕЙДЕРЫ", color = SHADER},
 	{name = "🔄  СМЕНИТЬ СЕРВЕР", color = Color3.fromRGB(255, 100, 100)}
 }
 
@@ -308,46 +312,24 @@ local function updateTPList()
 	scroll.CanvasSize = UDim2.new(0, 0, 0, total)
 end
 
--- ПРИЗРАК
+-- НЕВИДИМОСТЬ (РЕЖИМ ПРИЗРАКА)
 local ghostWin = makeWin("👻 РЕЖИМ ПРИЗРАКА", 170)
 local ghostBtn = Instance.new("TextButton")
 ghostBtn.Size = UDim2.new(1, -20, 0, 50)
 ghostBtn.Position = UDim2.new(0, 10, 0, 60)
 ghostBtn.BackgroundColor3 = GHOST
 ghostBtn.TextColor3 = WHITE_COLOR
-ghostBtn.Text = "👻 СТАТЬ ПРИЗРАКОМ"
+ghostBtn.Text = "👻 АКТИВИРОВАТЬ НЕВИДИМОСТЬ"
 ghostBtn.Font = Enum.Font.GothamBold
-ghostBtn.TextSize = 16
+ghostBtn.TextSize = 15
 ghostBtn.BorderSizePixel = 0
 ghostBtn.Parent = ghostWin
 Instance.new("UICorner", ghostBtn).CornerRadius = UDim.new(0, 10)
 
-local ghostOn = false
-local ghostConn = nil
-
 ghostBtn.MouseButton1Click:Connect(function()
-	ghostOn = not ghostOn
-	if ghostOn then
-		if ghostConn then ghostConn:Disconnect() end
-		ghostConn = RS.Stepped:Connect(function()
-			if Player.Character then
-				for _, v in pairs(Player.Character:GetDescendants()) do
-					if v:IsA("BasePart") then v.LocalTransparencyModifier = 0.7 end
-				end
-			end
-		end)
-		ghostBtn.Text = "🔙 СТАТЬ ВИДИМЫМ"
-		ghostBtn.BackgroundColor3 = RED
-	else
-		if ghostConn then ghostConn:Disconnect(); ghostConn = nil end
-		if Player.Character then
-			for _, v in pairs(Player.Character:GetDescendants()) do
-				if v:IsA("BasePart") then v.LocalTransparencyModifier = 0 end
-			end
-		end
-		ghostBtn.Text = "👻 СТАТЬ ПРИЗРАКОМ"
-		ghostBtn.BackgroundColor3 = GHOST
-	end
+	pcall(function()
+		loadstring(game:HttpGet("https://rawscripts.net/raw/Universal-Script-Invisible-script-20557"))()
+	end)
 end)
 
 -- НОКЛИП
@@ -774,6 +756,44 @@ xrayBtn.MouseButton1Click:Connect(function()
 	end
 end)
 
+-- АВТО КЛИКЕР
+local clickerWin = makeWin("🖱 АВТО КЛИКЕР", 150)
+local clickerBtn = Instance.new("TextButton")
+clickerBtn.Size = UDim2.new(1, -20, 0, 50)
+clickerBtn.Position = UDim2.new(0, 10, 0, 60)
+clickerBtn.BackgroundColor3 = CLICKER
+clickerBtn.TextColor3 = WHITE_COLOR
+clickerBtn.Text = "🖱 ЗАПУСТИТЬ АВТО КЛИКЕР"
+clickerBtn.Font = Enum.Font.GothamBold
+clickerBtn.TextSize = 14
+clickerBtn.BorderSizePixel = 0
+clickerBtn.Parent = clickerWin
+Instance.new("UICorner", clickerBtn).CornerRadius = UDim.new(0, 10)
+clickerBtn.MouseButton1Click:Connect(function()
+	pcall(function()
+		loadstring(game:HttpGet("https://raw.githubusercontent.com/stavurself/FastClicker/refs/heads/main/main.lua"))()
+	end)
+end)
+
+-- ШЕЙДЕРЫ
+local shaderWin = makeWin("🎨 ШЕЙДЕРЫ", 150)
+local shaderBtn = Instance.new("TextButton")
+shaderBtn.Size = UDim2.new(1, -20, 0, 50)
+shaderBtn.Position = UDim2.new(0, 10, 0, 60)
+shaderBtn.BackgroundColor3 = SHADER
+shaderBtn.TextColor3 = WHITE_COLOR
+shaderBtn.Text = "🎨 ЗАПУСТИТЬ ШЕЙДЕРЫ"
+shaderBtn.Font = Enum.Font.GothamBold
+shaderBtn.TextSize = 14
+shaderBtn.BorderSizePixel = 0
+shaderBtn.Parent = shaderWin
+Instance.new("UICorner", shaderBtn).CornerRadius = UDim.new(0, 10)
+shaderBtn.MouseButton1Click:Connect(function()
+	pcall(function()
+		loadstring(game:HttpGet("https://raw.githubusercontent.com/randomstring0/pshade-ultimate/refs/heads/main/src/cd.lua"))()
+	end)
+end)
+
 -- СМЕНИТЬ СЕРВЕР
 local rejoinWin = makeWin("🔄 СМЕНИТЬ СЕРВЕР", 180)
 local rejoinBtn = Instance.new("TextButton")
@@ -807,7 +827,9 @@ if createdButtons[8] then createdButtons[8].MouseButton1Click:Connect(function()
 if createdButtons[9] then createdButtons[9].MouseButton1Click:Connect(function() trollWin.Visible = true end) end
 if createdButtons[10] then createdButtons[10].MouseButton1Click:Connect(function() giftWin.Visible = true end) end
 if createdButtons[11] then createdButtons[11].MouseButton1Click:Connect(function() xrayWin.Visible = true end) end
-if createdButtons[12] then createdButtons[12].MouseButton1Click:Connect(function() rejoinWin.Visible = true end) end
+if createdButtons[12] then createdButtons[12].MouseButton1Click:Connect(function() clickerWin.Visible = true end) end
+if createdButtons[13] then createdButtons[13].MouseButton1Click:Connect(function() shaderWin.Visible = true end) end
+if createdButtons[14] then createdButtons[14].MouseButton1Click:Connect(function() rejoinWin.Visible = true end) end
 
 UIS.InputBegan:Connect(function(i, gpe)
 	if not gpe and i.KeyCode == Enum.KeyCode.M then main.Visible = not main.Visible end
